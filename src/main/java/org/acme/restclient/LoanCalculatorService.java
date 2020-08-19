@@ -12,7 +12,7 @@ import javax.ws.rs.*;
 public interface LoanCalculatorService {
 
     @POST
-    @Path("/containers/LoanPreQualification_1.0.0-SNAPSHOT/dmn")
+    @Path("/containers/DMNListExample/dmn")
     @Consumes("application/json")
     @ClientHeaderParam(name="Authorization", value="Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=")
     String checkQual(String json);

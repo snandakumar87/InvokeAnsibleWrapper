@@ -4,31 +4,22 @@ import java.util.List;
 
 public class ResultObj {
 
-    String qualification;
-    String affordability;
-    String dti;
+    String canInvoke;
+    String apbName;
 
-    public String getQualification() {
-        return qualification;
+    public String getCanInvoke() {
+        return canInvoke;
     }
 
-    public void setQualification(String qualification) {
-        this.qualification = qualification;
+    public void setCanInvoke(String canInvoke) {
+        this.canInvoke = canInvoke;
     }
 
-    public String getAffordability() {
-        return affordability;
+    public String getApbName() {
+        return apbName;
     }
 
-    public void setAffordability(String affordability) {
-        this.affordability = affordability;
-    }
-
-    public String getDti() {
-        return dti;
-    }
-
-    public void setDti(String dti) {
-        this.dti = dti;
+    public void setApbName(String apbName) {
+        this.apbName = apbName;
     }
 }

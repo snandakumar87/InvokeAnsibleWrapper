@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Pre-Qualification Calculator</title>
+    <title>Event Decisioning Check</title>
 
     <!-- PatternFly Styles -->
     <link rel="stylesheet" href="css/patternfly.min.css">
@@ -31,11 +31,12 @@ $scope.checkFunc = function() {
 $http({
         url: baseURL+'/qualification-check',
         method: "POST",
-        data: "{\"creditScore\":"+$scope.creditScore+",\"downPayment\":"+$scope.downPayment+",\"loanRate\":"+$scope.loanRate
-        +",\"monthlyIncome\":"+$scope.monthlyIncome+",\"purchasePrice\":"+$scope.purchasePrice+"}"
+        data: "{\"sensuEvent\":"+$scope.sensuEvent+",\"playbookEvents\":"+$scope.playbookEvents+",\"frequency\":"+$scope.frequency
+        +",\"interval\":"+$scope.interval+"}"
     })
     .then(function(response) {
            $scope.responseMsg =response.data;
+
     });
     }
 });
@@ -57,7 +58,7 @@ $http({
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="/">
-            <h2>Pre-Qualification Calculator</h2>
+            <h2>Event Decisioning Check</h2>
 
         </a>
     </div>
@@ -131,37 +132,32 @@ $http({
     <div class="col-xs-10 col-md-11">
         <form name="testForm">
             <div class="form-group>
-       <div class="control-label"><strong>Credit Score</strong></div>
-    <input class="col-lg-4" name="item" ng-model="creditScore" type="text" required>
-    <hr/>
-    <div class="control-label"><strong>Down Payment</strong></div>
-    <input class="col-lg-4" name="item" ng-model="downPayment" type="text" required>
-    <hr/>
-    <div class="control-label"><strong>Loan Rate</strong></div>
-    <input class="col-lg-4" name="item" ng-model="loanRate" type="text" required>
-    <hr/>
-    <div class="control-label"><strong>Monthly Income</strong></div>
-    <input class="col-lg-4" name="item" ng-model="monthlyIncome" type="text" required>
-    <hr/>
-    <div class="control-label"><strong>Purchase Price</strong></div>
-    <input class="col-lg-4" name="item" ng-model="purchasePrice" type="text" required>
-    <hr/>
-    <button id="rejectbutton"  type="button" class="btn btn-primary" ng-click="checkFunc();">Check Qualification</button>
+       <div class="control-label"><strong>Sensu Event</strong></div>
+<textarea rows="6" cols="200" ng-model="sensuEvent" style="font-size:18px"></textarea>
+    <div class="control-label"><strong>Playbook Event</strong></div>
+    <textarea rows="12" cols="200" ng-model="playbookEvents" style="font-size:18px"></textarea>
+    <div class="control-label"><strong>Frequency</strong></div>
+    <input type="text" ng-model="frequency" style="font-size:18px">
+    <div class="control-label"><strong>Interval</strong></div>
+    <input type="text" ng-model="interval" style="font-size:18px">
+   <br/>
+    <br/>
+    <button id="rejectbutton"  type="button" class="btn btn-primary" ng-click="checkFunc();">Check Rule</button>
 <hr/>
     <table class="table table-striped table-bordered table-hover" id="table1" ng-show="responseMsg != null">
         <thead>
         <tr>
-            <th>Qualification</th>
-            <th>Affordability</th>
-            <th>Debt to Income Ratio (DTI)</th>
+            <th>Can Invoke</th>
+            <th>Ansible Template</th>
 
 
         </tr>
         </thead>
         <tr>
-            <td>{{responseMsg.qualification}}</td>
-            <td>{{responseMsg.affordability}}</td>
-            <td>{{responseMsg.dti}}</td>
+            <td style="font-size:18px">{{responseMsg.apbName}}</td>
+
+            <td style="font-size:18px">{{responseMsg.canInvoke}}</td>
+
 
         </tr>
     </table>

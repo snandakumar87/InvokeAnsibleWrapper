@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 
 @Path("/qualification-check")
@@ -27,19 +28,21 @@ public class LoanCalculatorResource {
 
         try {
             LinkedHashMap mapVal = new Gson().fromJson(json,LinkedHashMap.class);
-            System.out.println(mapVal.keySet());
-            String dmnReq = "{ \"model-namespace\" : \"https://kiegroup.org/dmn/_4D5ED131-974B-42A5-8997-9D416DD102E7\", " +
-                    "\"model-name\" : \"Loan PreQualification\", \"dmn-context\" : {\"Credit Score\" : "+mapVal.get("creditScore")+", " +
-                    "\"Down payment\": " +
-                    mapVal.get("downPayment")+"," +
-                    "\"Loan rate pct\":"+mapVal.get("loanRate")+"," +
-                    "\"Monthly income\":"+mapVal.get("monthlyIncome")+",\"Purchase price\":"+mapVal.get("purchasePrice")+"}}";
-
-             String response = onboardingService.checkQual(dmnReq);
 
 
-            ResultObj resultObj = parseResults(response);
 
+            String dmnReq = "{ \"model-namespace\" : \"https://kiegroup.org/dmn/_C57E89DD-6F36-4590-809A-0B8E742F2676\", " +
+                    "\"model-name\" : \"ProcessFailureDMN\", \"dmn-context\" : {\"SensuEvents\" : "+new Gson().toJson(mapVal.get("sensuEvent"))+", " +
+                    "\"ApbRuns\": " +
+                    new Gson().toJson(mapVal.get("playbookEvents"))+"," +
+                    "\"Frequency\":"+mapVal.get("frequency")+"," +
+                    "\"Interval\":"+mapVal.get("interval")+"}}";
+            System.out.println(dmnReq);
+            String response = onboardingService.checkQual(dmnReq);
+//
+         ResultObj resultObj = parseResults(response);
+
+            System.out.println(mapVal);
 
             return resultObj;
 
@@ -58,16 +61,25 @@ public class LoanCalculatorResource {
 
         LinkedHashMap decisionresult = new Gson().fromJson(new Gson().toJson(dmnEvalResult.get("decision-results")),LinkedHashMap.class);
 
-        LinkedHashMap finaldecision = new Gson().fromJson(new Gson().toJson(decisionresult.get("_2BBB81EB-DFA8-4E73-BC84-A25334E8FFED")),LinkedHashMap.class);
+        LinkedHashMap finaldecision = new Gson().fromJson(new Gson().toJson(decisionresult.get("_55210F26-19E5-4B5B-BA17-1EE73BC4AF69")),LinkedHashMap.class);
+
+
+        System.out.println(finaldecision.get("result").toString());
+
+        LinkedHashMap final1 = new Gson().fromJson(new Gson().toJson(decisionresult.get("_8F231DF5-F27F-4357-8536-85EDC5FF41D5")),LinkedHashMap.class);
+
 
 
         ResultObj resultObj = new ResultObj();
-        resultObj.setQualification(finaldecision.get("result").toString());
-        LinkedHashMap dti = new Gson().fromJson(new Gson().toJson(decisionresult.get("_1431987D-1D84-494C-A918-D380D3F87AFE")),LinkedHashMap.class);
-        resultObj.setDti(dti.get("result").toString());
+        resultObj.setApbName(finaldecision.get("result").toString());
 
-        LinkedHashMap affordability = new Gson().fromJson(new Gson().toJson(decisionresult.get("_78978B61-5DC5-4363-8B96-264C4633B106")),LinkedHashMap.class);
-        resultObj.setAffordability(affordability.get("result").toString());
+
+        if(null != final1 && final1.get("result") != null) {
+            System.out.println(final1.get("result").toString());
+            resultObj.setCanInvoke(final1.get("result").toString());
+
+        }
+
         return resultObj;
     }
 
